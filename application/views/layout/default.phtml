@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+    <META NAME="format-detection" CONTENT="telephone=no"/>
+    <title><?php echo $this->getTitle(); ?></title>
+    <?php foreach ($this->getMeta() as $value): ?>
+        <?php
+        $strMeta = '';
+        if (is_array($value)) {
+            foreach ($value as $k => $v) {
+                $strMeta .= sprintf('%s="%s" ', $k, $v) . ' ';
+            }
+        } else {
+            $strMeta = $value;
+        }
+        ?>
+        <meta <?php echo $strMeta ?> />
+    <?php endforeach; ?>
+    <?php if ($this->getStyles()): ?>
+        <?php foreach ($this->getStyles() as $styleFile): ?>
+            <link href="<?php echo $styleFile; ?>" rel="stylesheet" type="text/css"/>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    <?php if ($this->getJavascript(TRUE)): ?>
+        <?php foreach ($this->getJavascript(TRUE) as $val): ?>
+            <script type="text/javascript" src="<?php echo $val[0]; ?>"></script>
+        <?php endforeach; ?>
+    <?php endif; ?>
+
+</head>
+<body>
+<h1>header</h1>
+<?php echo $this->getSubView(); ?>
+<h1>footer</h1>
+<?php if ($this->getJavascript()): ?>
+    <?php foreach ($this->getJavascript() as $val): ?>
+        <script type="text/javascript" src="<?php echo $val[0]; ?>"></script>
+    <?php endforeach; ?>
+<?php endif; ?>
+<?php if ($this->getJavascriptBlocks()): ?>
+    <script type="text/javascript">
+        <?php echo $this->getJavascriptBlocks();?>
+    </script>
+<?php endif; ?>
+</body>
+</html>

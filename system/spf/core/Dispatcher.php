@@ -34,6 +34,8 @@ class Dispatcher
 
     private static $plugins = array();
 
+    private static $interceptor = array();
+
     function __construct()
     {
     }
@@ -120,7 +122,7 @@ class Dispatcher
      * 执行插件
      * @param $step
      */
-    protected function executePlugins($step)
+    protected function executePlugins($step='before')
     {
         if (empty(self::$plugins)) {
             return;
@@ -152,6 +154,13 @@ class Dispatcher
         }
     }
 
+    protected function executeInterceptor($step)
+    {
+        if($step=='before'){
+
+        }
+    }
+
     /**
      * @param $class
      * @return array
@@ -174,8 +183,8 @@ class Dispatcher
         }
         if ($interceptorClasses) {
             $interceptorClasses = array_unique($interceptorClasses);
-            foreach ($interceptorClasses as $key=>$cls) {
-                if (strpos($cls,'!')===0) {
+            foreach ($interceptorClasses as $key => $cls) {
+                if (strpos($cls, '!') === 0) {
                     unset($interceptorClasses[$key]);
                     $className = substr($cls, 1);
                     $idx = array_search($className, $interceptorClasses);
@@ -189,7 +198,6 @@ class Dispatcher
                 }
             }
         }
-        print_r($interceptorClasses);
         return $interceptors;
     }
 
@@ -216,6 +224,14 @@ class Dispatcher
         //dispatchloop startup
         $this->executePlugins(Plugin::STEP_DISPATCH_LOOP_STARTUP);
         $interceptors = $this->getInterceptor($class);
+        if ($interceptors) {
+            foreach ($interceptors as $interceptor) {
+                $step = $interceptor->before();
+                if ($step != Interceptor::STEP_CONTINUE) {
+                    break;
+                }
+            }
+        }
         while (true) {
             //preDispatch
             $this->executePlugins(Plugin::STEP_DISPATCH_STARTUP);

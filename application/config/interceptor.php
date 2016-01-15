@@ -1,12 +1,12 @@
 <?php
 $config['global'] = array(
     'DBSession',
-    'Auth',
+    'Interceptors\Auth',
 );
 $config['default'] = array(
     'test'
 );
 $config['\Controllers\Index'] = array(
-    '!Auth',
+    '!Interceptors\Auth',
     'Interceptors\Log',
 );

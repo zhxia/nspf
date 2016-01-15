@@ -31,16 +31,18 @@ class Loader
     }
 
     /**
-     * @param $class_name
+     * @param $className
      * @return bool
      */
-    public static function autoload($class_name)
+    public static function autoload($className)
     {
         global $G_LOAD_PATH;
-        $class_name = strtolower($class_name);
-        $class_file = str_replace('\\', DIRECTORY_SEPARATOR, $class_name) . '.php';
+        $arrTemp=explode('\\',$className);
+        $filename=array_pop($arrTemp);
+        $className=strtolower(implode('\\',$arrTemp)).'\\'.$filename;
+        $classFile = str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php';
         foreach ($G_LOAD_PATH as $path) {
-            $file = $path . $class_file;
+            $file = $path . $classFile;
             if (file_exists($file)) {
                 require_once "$file";
                 return true;

@@ -184,9 +184,9 @@ class Dispatcher
                     }
                     continue;
                 }
-//                if (class_exists($className)) {
-//                    $interceptors[] = new $className();
-//                }
+                if (class_exists($className)) {
+                    $interceptors[] = new $className();
+                }
             }
         }
         print_r($interceptorClasses);

@@ -81,4 +81,45 @@ class Loader
         }
     }
 
+    /**
+     * 加载指定控制器的拦截器
+     * @param $class
+     * @return Interceptor[]
+     */
+    public function loadInterceptors($class)
+    {
+        $Interceptors=array();
+        $interceptorClasses = array();
+        $globalInterceptorClasses = Loader::getInstance()->getConfig('global', 'interceptor');
+        if ($globalInterceptorClasses && is_array($globalInterceptorClasses)) {
+            $interceptorClasses = $globalInterceptorClasses;
+        }
+        $classInterceptors = Loader::getInstance()->getConfig($class, 'interceptor');
+        if (empty($classInterceptors)) {
+            //@todo 获取基类Controller的拦截器
+            $classInterceptors = Loader::getInstance()->getConfig('default', 'interceptor');
+        }
+        if ($classInterceptors && is_array($classInterceptors)) {
+            $interceptorClasses = array_merge($interceptorClasses, $classInterceptors);
+        }
+        if ($interceptorClasses) {
+            $interceptorClasses = array_unique($interceptorClasses);
+            foreach ($interceptorClasses as $key => $cls) {
+                if (strpos($cls, '!') === 0) {
+                    unset($interceptorClasses[$key]);
+                    $className = substr($cls, 1);
+                    $idx = array_search($className, $interceptorClasses);
+                    if ($idx !== false) {
+                        unset($interceptorClasses[$idx]);
+                    }
+                    continue;
+                }
+                if (class_exists($className)) {
+                    $Interceptors[] = new $className();
+                }
+            }
+        }
+        return $Interceptors;
+    }
+
 }

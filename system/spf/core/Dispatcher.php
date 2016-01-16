@@ -34,7 +34,10 @@ class Dispatcher
 
     private static $plugins = array();
 
-    private static $interceptor = array();
+    /**
+     * @var Interceptor[]
+     */
+    private static $_interceptors = array();
 
     function __construct()
     {
@@ -122,7 +125,7 @@ class Dispatcher
      * 执行插件
      * @param $step
      */
-    protected function executePlugins($step='before')
+    protected function executePlugins($step)
     {
         if (empty(self::$plugins)) {
             return;
@@ -154,52 +157,35 @@ class Dispatcher
         }
     }
 
-    protected function executeInterceptor($step)
-    {
-        if($step=='before'){
-
-        }
-    }
-
     /**
-     * @param $class
-     * @return array
+     * 执行拦截器
+     * @param $invokeStep
+     * @return bool
      */
-    protected function getInterceptor($class)
+    protected function executeInterceptor($invokeStep)
     {
-        $interceptors = array();
-        $interceptorClasses = array();
-        $globalInterceptorClasses = Loader::getInstance()->getConfig('global', 'interceptor');
-        if ($globalInterceptorClasses && is_array($globalInterceptorClasses)) {
-            $interceptorClasses = $globalInterceptorClasses;
+        if (empty(self::$_interceptors)) {
+            return false;
         }
-        $classInterceptors = Loader::getInstance()->getConfig($class, 'interceptor');
-        if (empty($classInterceptors)) {
-            //@todo 获取基类Controller的拦截器
-            $classInterceptors = Loader::getInstance()->getConfig('default', 'interceptor');
-        }
-        if ($classInterceptors && is_array($classInterceptors)) {
-            $interceptorClasses = array_merge($interceptorClasses, $classInterceptors);
-        }
-        if ($interceptorClasses) {
-            $interceptorClasses = array_unique($interceptorClasses);
-            foreach ($interceptorClasses as $key => $cls) {
-                if (strpos($cls, '!') === 0) {
-                    unset($interceptorClasses[$key]);
-                    $className = substr($cls, 1);
-                    $idx = array_search($className, $interceptorClasses);
-                    if ($idx !== false) {
-                        unset($interceptorClasses[$idx]);
-                    }
-                    continue;
+
+        if ($invokeStep == Interceptor::INVOKE_BEFORE) {
+            foreach (self::$_interceptors as $interceptor) {
+                $step = $interceptor->before();
+                if ($step != Interceptor::STEP_CONTINUE) {
+                    break;
                 }
-                if (class_exists($className)) {
-                    $interceptors[] = new $className();
+            }
+        } elseif ($invokeStep == Interceptor::INVOKE_AFTER) {
+            self::$_interceptors = array_reverse(self::$_interceptors);
+            foreach (self::$_interceptors as $interceptor) {
+                $step = $interceptor->after();
+                if ($step != Interceptor::STEP_CONTINUE) {
+                    break;
                 }
             }
         }
-        return $interceptors;
     }
+
 
     public function dispatch()
     {
@@ -223,15 +209,9 @@ class Dispatcher
         $controller = new $class();
         //dispatchloop startup
         $this->executePlugins(Plugin::STEP_DISPATCH_LOOP_STARTUP);
-        $interceptors = $this->getInterceptor($class);
-        if ($interceptors) {
-            foreach ($interceptors as $interceptor) {
-                $step = $interceptor->before();
-                if ($step != Interceptor::STEP_CONTINUE) {
-                    break;
-                }
-            }
-        }
+        //load current controller's interceptors
+        self::$_interceptors = Loader::getInstance()->loadInterceptors($class);
+        $this->executeInterceptor(Interceptor::INVOKE_BEFORE);
         while (true) {
             //preDispatch
             $this->executePlugins(Plugin::STEP_DISPATCH_STARTUP);
@@ -244,6 +224,11 @@ class Dispatcher
             }
             break;
         }
+        if (is_string($result)) {
+            $this->_view->display($result);
+            //todo 自动加载视图
+        }
+        $this->executeInterceptor(Interceptor::INVOKE_AFTER);
         //dispatchloop shutdown
         $this->executePlugins(Plugin::STEP_DISPATCH_LOOP_SHUTDOWN);
 

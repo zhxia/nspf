@@ -19,8 +19,10 @@ class index extends Core\Controller
 
     public function execute()
     {
-//        $this->view->displayJson(array('name'=>'zhxia'));
-        $this->getView()->display('index');
+//        $this->getView()->display('index');
+//        $this->getView()->assign('content', 'This is content!');
+//        return 'Index';
+        $this->getView()->displayJson(array('name'=>'zhxia'));
     }
 
 }

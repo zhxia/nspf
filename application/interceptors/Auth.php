@@ -13,5 +13,16 @@ use Spf\Core\Interceptor;
 
 class Auth extends Interceptor
 {
+    public function before()
+    {
+//        echo 'Before<br/>';
+        return self::STEP_CONTINUE;
+    }
+
+    public function after()
+    {
+//        echo 'After<br/>';
+        return self::STEP_CONTINUE;
+    }
 
 }

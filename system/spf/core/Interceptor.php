@@ -11,6 +11,8 @@ namespace Spf\Core;
 
 class Interceptor
 {
+    const INVOKE_BEFORE = 1;
+    const INVOKE_AFTER = 2;
     const STEP_CONTINUE = 1;
     const STEP_BREAK = 2;
     const STEP_EXIT = 3;

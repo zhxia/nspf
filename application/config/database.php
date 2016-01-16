@@ -16,3 +16,12 @@ $config['slave'] = array(
     'init_statements' => array('SET CHARACTER SET utf8', 'SET NAMES utf8'),
     'default_fetch_mode' => PDO::FETCH_ASSOC
 );
+
+$config[]=array(
+    'driver_class'=>'',
+    'host'=>'',
+    'port'=>3306,
+    'database'=>'',
+    'user'=>'',
+    'password'=>'',
+);

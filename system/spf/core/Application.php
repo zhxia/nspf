@@ -17,9 +17,26 @@ class Application
      */
     private $_dispatcher;
 
+    private $_shutdownFunctions = array();
+
     private function __construct()
     {
         $this->_dispatcher = new Dispatcher();
+        register_shutdown_function(array($this, 'shutdown'));
+    }
+
+    public function shutdown()
+    {
+        if ($this->_shutdownFunctions) {
+            foreach ($this->_shutdownFunctions as $func) {
+                call_user_func($func);
+            }
+        }
+    }
+
+    public function registerShutdownFunctions($function)
+    {
+        $this->_shutdownFunctions[] = $function;
     }
 
     /**

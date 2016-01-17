@@ -86,8 +86,8 @@ class Router
         $uri = trim($uri, '/');
         if ($uri) {
             $pieces = explode('/', $uri);
-            $pieces = array_map('ucfirst', $pieces);
-            return implode('_', $pieces);
+            $filename = array_pop($pieces);
+            return 'Controllers\\' . ($pieces ? implode('\\', $pieces) . '\\' : '') . ucfirst($filename);
         }
         return false;
     }

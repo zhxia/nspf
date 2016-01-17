@@ -51,7 +51,7 @@ class SqlBuilder
      * @param $option
      * @return string
      */
-    public static function  buildDeleteSql($table, $where, $option)
+    public static function  buildDeleteSql($table, $where, $option='')
     {
         $sql = "DELETE FROM `{$table}`";
         $strWhere = self::buildWhere($where);

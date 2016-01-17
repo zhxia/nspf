@@ -15,8 +15,13 @@ class User extends Model
 {
     public function getList()
     {
-        $sql = 'SELECT * FROM USER';
-        $result = $this->getDB()->query($sql);
-        var_dump($result);
+        $sql = 'select * from user';
+        $query = $this->getDB()->query($sql);
+        if ($query) {
+            $result = $query->fetchAll();
+            print_r($result);
+            return $result;
+        }
+        return false;
     }
 }

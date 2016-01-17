@@ -9,6 +9,9 @@
 namespace Spf\Database\Pdo;
 
 
+use Spf\Core\Debugger;
+use Spf\Core\Logger\LoggerFactory;
+
 class Statement extends \PDOStatement
 {
     /**
@@ -26,14 +29,14 @@ class Statement extends \PDOStatement
         $this->_pdo = $pdo;
     }
 
-    public function execute($input_parameters = array())
+    public function execute($inputParameters = array())
     {
-        $ret = parent::execute($input_parameters);
-        Spf_Debugger::get_instance()->debug('SQL:' . $this->queryString . ';params:' . var_export($input_parameters, true));
+        $ret = parent::execute($inputParameters);
+        Debugger::getInstance()->debug('SQL:' . $this->queryString . ';params:' . var_export($inputParameters, true));
         if (!$ret) {
             $error_info = parent::errorInfo();
             if (parent::errorCode() != '00000') { // 执行成功时返回五个零
-                Spf_Log_LoggerFactory::get_logger()->error('PDO executed failed,errors:' . var_export($error_info, true));
+                LoggerFactory::getLogger()->error('PDO executed failed,errors:' . var_export($error_info, true));
                 trigger_error($this->queryString, E_USER_ERROR);
             }
         }

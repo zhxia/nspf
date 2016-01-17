@@ -19,5 +19,6 @@ $G_CONF_PATH = array(
 require_once SYS_PATH . 'spf/core/Loader.php';
 spl_autoload_register(array('spf\core\Loader', 'autoload'));
 $app = \spf\core\Application::getInstance();
+\Spf\Core\Debugger::getInstance()->setDebugEnabled(true);
 //$app->getDispatcher()->registerPlugin(new \Plugins\login());
 $app->run();

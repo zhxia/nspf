@@ -9,6 +9,7 @@
 namespace Spf\Database\Pdo;
 
 
+use Spf\Core\Debugger;
 use Spf\Core\Logger\LoggerFactory;
 
 /**
@@ -59,7 +60,7 @@ class Pdo extends \PDO
      */
     public function exec($statement)
     {
-        LoggerFactory::getLogger()->info('SQL:' . $statement);
+        Debugger::getInstance()->debug('SQL:' . $statement);
         return parent::exec($statement);
     }
 
@@ -71,7 +72,7 @@ class Pdo extends \PDO
      */
     public function query($statement, $pdo_option = null, $object = null)
     {
-        LoggerFactory::getLogger()->info('sql:' . $statement);
+        Debugger::getInstance()->debug('SQL:' . $statement);
         if ($pdo_option != null && $object != null) {
             $stmt = parent::query($statement, $pdo_option, $object);
         } else {

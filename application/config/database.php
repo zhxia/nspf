@@ -1,7 +1,7 @@
 <?php
-$config['dao_class'] = 'Spf\Core\Database\Pdo\DataAccess';
+$config['dao_class'] = 'Spf\Database\Pdo\DataAccess';
 $config['master'] = array(
-    'dsn' => 'mysql:host=192.168.137.120;dbname=test',
+    'dsn' => 'mysql:host=127.0.0.1;dbname=test',
     'username' => 'zhxia',
     'password' => 'admin',
     'init_attributes' => array(),
@@ -9,7 +9,7 @@ $config['master'] = array(
     'default_fetch_mode' => PDO::FETCH_ASSOC
 );
 $config['slave'] = array(
-    'dsn' => 'mysql:host=192.168.137.120;dbname=test',
+    'dsn' => 'mysql:host=127.0.0.1;dbname=test',
     'username' => 'zhxia',
     'password' => 'admin',
     'init_attributes' => array(),

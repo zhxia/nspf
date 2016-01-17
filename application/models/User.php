@@ -13,15 +13,11 @@ use Spf\Core\Model;
 
 class User extends Model
 {
+    const TABLE_NAME='user';
     public function getList()
     {
-        $sql = 'select * from user';
-        $query = $this->getDB()->query($sql);
-        if ($query) {
-            $result = $query->fetchAll();
-            print_r($result);
-            return $result;
-        }
-        return false;
+       $rows=$this->getDB()->select(self::TABLE_NAME,array('id>'=>1));
+        print_r($rows);
     }
+
 }

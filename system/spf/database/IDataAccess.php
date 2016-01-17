@@ -19,7 +19,7 @@ interface IDataAccess
 
     public function insertOnUpdate($table, $data, $update);
 
-    public function select($table, $where, $order, $limit, $offset, $fields);
+    public function select($table, $where = '', $order = '', $limit = 20, $offset = 0, $fields = '*');
 
     public function selectCount($table, $where);
 

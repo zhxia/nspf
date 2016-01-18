@@ -11,16 +11,16 @@ namespace Interceptors;
 
 use Spf\Core\Interceptor;
 
-class Log extends Interceptor
+class LogInterceptor extends Interceptor
 {
     public function before()
     {
-        echo 'before<br/>';
+//        echo 'before<br/>';
     }
 
     public function after()
     {
-        echo 'after<br/>';
+//        echo 'after<br/>';
     }
 
 }

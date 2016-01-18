@@ -22,7 +22,7 @@ class Debugger
     private $_benchmarks = array();
     private $_messages = array();
     private static $instance = null;
-    private $_debugEnabled = true;
+    private $_enabled = true;
 
     private function __construct()
     {
@@ -41,22 +41,22 @@ class Debugger
         return self::$instance;
     }
 
-    public function setDebugEnabled($enabled)
+    public function setEnabled($enabled)
     {
-        $this->_debugEnabled = $enabled;
+        $this->_enabled = $enabled;
     }
 
     public function shutdown()
     {
         $this->benchmarkEnd(self::DEFAULT_BENCHMARK);
-        if ($this->_debugEnabled) {
+        if ($this->_enabled) {
             $this->showDebugInfo();
         }
     }
 
     public function debug($message)
     {
-        if (!$this->_debugEnabled) {
+        if (!$this->_enabled) {
             return false;
         }
         $this->_messages[] = array(

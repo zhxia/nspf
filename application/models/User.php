@@ -11,7 +11,7 @@ namespace Models;
 
 use Spf\Core\Model;
 
-class User extends Model
+class UserModel extends Model
 {
     const TABLE_NAME='user';
     public function getList()

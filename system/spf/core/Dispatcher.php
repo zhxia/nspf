@@ -32,15 +32,42 @@ class Dispatcher
      */
     private $_view;
 
-    private static $plugins = array();
+    private static $_plugins = array();
 
     /**
      * @var Interceptor[]
      */
     private static $_interceptors = array();
 
+    private $_exceptionHandler;
+    private $_errorHandler;
+
     function __construct()
     {
+        if (!$this->_errorHandler) {
+            $this->_errorHandler = array('Spf\Core\Error', 'errorHandler');
+        }
+        set_error_handler($this->_errorHandler);
+        if (!$this->_exceptionHandler) {
+            $this->_exceptionHandler = array('Spf\Core\Error', 'exceptionHandler');
+        }
+        set_exception_handler($this->_exceptionHandler);
+    }
+
+    function __destruct()
+    {
+        restore_error_handler();
+        restore_exception_handler();
+    }
+
+    public function setErrorHandler(callable $callback)
+    {
+        $this->_errorHandler = $callback;
+    }
+
+    public function setExceptionHandler(callable $callback)
+    {
+        $this->_exceptionHandler = $callback;
     }
 
     /**
@@ -110,7 +137,7 @@ class Dispatcher
 
     public function registerPlugin(Plugin $plugin)
     {
-        self::$plugins[] = $plugin;
+        self::$_plugins[] = $plugin;
     }
 
     /**
@@ -118,7 +145,7 @@ class Dispatcher
      */
     public function getPlugins()
     {
-        return self::$plugins;
+        return self::$_plugins;
     }
 
     /**
@@ -127,10 +154,10 @@ class Dispatcher
      */
     protected function executePlugins($step)
     {
-        if (empty(self::$plugins)) {
+        if (empty(self::$_plugins)) {
             return;
         }
-        foreach (self::$plugins as $plugin) {
+        foreach (self::$_plugins as $plugin) {
             switch ($step) {
                 case Plugin::STEP_ROUTER_STARTUP:
                     $plugin->routerStartup($this->_request, $this->_response);
@@ -186,7 +213,9 @@ class Dispatcher
         }
     }
 
-
+    /**
+     * 请求分发
+     */
     public function dispatch()
     {
         if (!$this->_request) {
@@ -231,6 +260,5 @@ class Dispatcher
         $this->executeInterceptor(Interceptor::INVOKE_AFTER);
         //dispatchloop shutdown
         $this->executePlugins(Plugin::STEP_DISPATCH_LOOP_SHUTDOWN);
-
     }
 }

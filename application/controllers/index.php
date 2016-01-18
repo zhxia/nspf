@@ -10,7 +10,7 @@ namespace Controllers;
 
 use Spf\Core;
 
-class index extends Core\Controller
+class IndexController extends Core\Controller
 {
     function init()
     {
@@ -19,10 +19,10 @@ class index extends Core\Controller
 
     public function execute()
     {
-//        $this->getView()->display('index');
-//        $this->getView()->assign('content', 'This is content!');
+        $this->getView()->assign('content', 'This is content!');
+        $this->getView()->display('index');
 //        return 'Index';
-        $this->getView()->displayJson(array('name'=>'zhxia'));
+//        $this->getView()->displayJson(array('name'=>'zhxia'));
     }
 
 }

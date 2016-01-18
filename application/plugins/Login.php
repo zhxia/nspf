@@ -12,16 +12,16 @@ use Spf\Core\Plugin;
 use Spf\Core\Request;
 use Spf\Core\Response;
 
-class Login extends Plugin
+class LoginPlugin extends Plugin
 {
     public function routerStartup(Request $request, Response $response)
     {
-        echo 'Router Startup!<br/>';
+//        echo 'Router Startup!<br/>';
     }
 
     public function routerShutdown(Request $request, Response $response)
     {
-        echo 'Router Shutdown!<br/>';
+//        echo 'Router Shutdown!<br/>';
     }
 
 

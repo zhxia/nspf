@@ -71,21 +71,21 @@ class SysLogger implements ILogger
         }
         $args = func_get_args();
         $priority = $args[0];
-        $name = $args[1];
+        $message = $args[1];
         if ($priority > $this->allowPriority) {
             return false;
         }
         $priorityName = $this->getLevelName($priority);
-        $message = '';
+        $strLog = '';
         if ($priorityName) {
-            $message = "[{$priorityName}]";
+            $strLog = "[{$priorityName}]";
         }
-        $message .= "[{$name}]";
+        $strLog .= "{$message}";
         for ($i = 2; $i < $argsNum; $i++) {
-            $message .= $args[$i];
+            $strLog .= $args[$i];
         }
         openlog('SPF', LOG_PID, LOG_USER);
-        syslog($priority, $message);
+        syslog($priority, $strLog);
         closelog();
     }
 

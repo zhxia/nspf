@@ -14,6 +14,12 @@ class Loader
 
     private static $config = array();
     private static $_instance = null;
+    private static $_coreSuffix = array(
+        'Controller',
+        'Model',
+        'Plugin',
+        'Interceptor'
+    );
 
     private function __construct()
     {
@@ -37,9 +43,15 @@ class Loader
     public static function autoload($className)
     {
         global $G_LOAD_PATH;
-        $arrTemp=explode('\\',$className);
-        $filename=array_pop($arrTemp);
-        $className=strtolower(implode('\\',$arrTemp)).'\\'.$filename;
+        $arrTemp = explode('\\', $className);
+        $filename = array_pop($arrTemp);
+        foreach (self::$_coreSuffix as $suffix) {
+            if ($idx = strpos($filename, $suffix)) {
+                $filename = substr($filename, 0, $idx);
+                break;
+            }
+        }
+        $className = strtolower(implode('\\', $arrTemp)) . '\\' . $filename;
         $classFile = str_replace('\\', DIRECTORY_SEPARATOR, $className) . '.php';
         foreach ($G_LOAD_PATH as $path) {
             $file = $path . $classFile;
@@ -48,7 +60,7 @@ class Loader
                 return true;
             }
         }
-        trigger_error('file:"' . $file . '" not found!', E_USER_WARNING);
+        trigger_error('class:"' . $className . '" not found!', E_USER_WARNING);
         return false;
     }
 
@@ -88,7 +100,7 @@ class Loader
      */
     public function loadInterceptors($class)
     {
-        $Interceptors=array();
+        $Interceptors = array();
         $interceptorClasses = array();
         $globalInterceptorClasses = Loader::getInstance()->getConfig('global', 'interceptor');
         if ($globalInterceptorClasses && is_array($globalInterceptorClasses)) {
@@ -104,10 +116,10 @@ class Loader
         }
         if ($interceptorClasses) {
             $interceptorClasses = array_unique($interceptorClasses);
-            foreach ($interceptorClasses as $key => $cls) {
-                if (strpos($cls, '!') === 0) {
+            foreach ($interceptorClasses as $key => $className) {
+                if (strpos($className, '!') === 0) {
                     unset($interceptorClasses[$key]);
-                    $className = substr($cls, 1);
+                    $className = substr($className, 1);
                     $idx = array_search($className, $interceptorClasses);
                     if ($idx !== false) {
                         unset($interceptorClasses[$idx]);

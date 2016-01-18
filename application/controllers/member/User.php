@@ -9,15 +9,18 @@
 namespace Controllers\Member;
 
 
+use Models\UserModel;
 use Spf\Core\Controller;
 
-class User extends Controller
+class UserController extends Controller
 {
     public function execute()
     {
-        $data = array(
-            'name' => 'zhxia',
-            'age' => 31,
+        $userModel=new UserModel();
+//        $data=$userModel->getList();
+        $data=array(
+            'name'=>'zhxia',
+            'age'=>110
         );
         $this->getView()->displayJson($data);
     }

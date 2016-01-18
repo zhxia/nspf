@@ -11,7 +11,7 @@ namespace Interceptors;
 
 use Spf\Core\Interceptor;
 
-class Auth extends Interceptor
+class AuthInterceptor extends Interceptor
 {
     public function before()
     {

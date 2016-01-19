@@ -10,10 +10,10 @@ namespace Spf\Database;
 
 
 /**
- * Interface IDataAccess
+ * Interface IDaoAdapter
  * @package Spf\Database
  */
-interface IDataAccess
+interface IDaoAdapter
 {
     public function __construct($config);
 

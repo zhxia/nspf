@@ -9,17 +9,18 @@
 namespace Spf\Core;
 
 
-use Spf\Database\DataAccessFactory;
+use Spf\Database\DaoAdapterFactory;
 
 class Model
 {
+
     /**
      * @param bool|false $master
-     * @return bool|\Spf\Database\IDataAccess
+     * @return bool|\Spf\Database\IDaoAdapter
      */
     protected function getDB($master = false)
     {
-        return DataAccessFactory::getInstance()->getDao($master);
+        return DaoAdapterFactory::getInstance()->getDao($master);
     }
 
 }

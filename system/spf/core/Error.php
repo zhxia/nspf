@@ -49,7 +49,7 @@ class Error
         }
     }
 
-    public static function exceptionHandler(Exception $exception)
+    public static function exceptionHandler($exception)
     {
         $message = sprintf('SPF Exception:errno:%s,message:%s,trace:%s', $exception->getCode(), $exception->getMessage(), $exception->getTraceAsString());
         $error_level = ini_get('error_reporting');

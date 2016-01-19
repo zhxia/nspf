@@ -13,11 +13,16 @@ use Spf\Core\Model;
 
 class UserModel extends Model
 {
-    const TABLE_NAME='user';
+    const TABLE_NAME = 'user';
+
     public function getList()
     {
-       $rows=$this->getDB()->select(self::TABLE_NAME,array('id>'=>1));
-        print_r($rows);
+        $rows = $this->getDB()->select(self::TABLE_NAME, array('id>=' => 1));
+        return $rows;
     }
 
+    public function getTotal()
+    {
+        return $this->getDB()->selectCount(self::TABLE_NAME, array('id>=' => 1));
+    }
 }

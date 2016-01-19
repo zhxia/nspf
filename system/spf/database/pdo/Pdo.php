@@ -33,6 +33,8 @@ class Pdo extends \PDO
         $this->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER); //强制表字段的所有列名小写
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); //配置错误报告为警告
         $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('Spf\Database\Pdo\Statement', array($this)));
+        $message="dsn:{$dsn};username:{$username};password:{$password}";
+        Debugger::getInstance()->debug($message);
     }
 
     public function setDefaultMode($mode)
@@ -48,7 +50,7 @@ class Pdo extends \PDO
     public function prepare($statement, $driver_options = array())
     {
         $stmt = parent::prepare($statement, $driver_options);
-        if ($stmt instanceof PDOStatement) {
+        if (is_subclass_of($stmt,'PDOStatement')) {
             $stmt->setFetchMode($this->defaultFetchMode);
         }
         return $stmt;

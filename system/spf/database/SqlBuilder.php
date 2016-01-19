@@ -156,6 +156,6 @@ class SqlBuilder
         } else {
             $strWhere = strval($where);
         }
-        return $strWhere ? 'WHERE ' . $strWhere : '';
+        return $strWhere ? ' WHERE ' . $strWhere : '';
     }
 }

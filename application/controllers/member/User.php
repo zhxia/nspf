@@ -17,12 +17,15 @@ class UserController extends Controller
     public function execute()
     {
         $userModel=new UserModel();
-//        $data=$userModel->getList();
-        $data=array(
+        $data=$userModel->getList();
+        print_r($data);
+        $cnt=$userModel->getTotal();
+        var_dump($cnt);
+       /* $data=array(
             'name'=>'zhxia',
             'age'=>110
-        );
-        $this->getView()->displayJson($data);
+        );*/
+//        $this->getView()->displayJson($data);
     }
 
 }

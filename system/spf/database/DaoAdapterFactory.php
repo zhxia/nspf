@@ -12,20 +12,20 @@ namespace Spf\Database;
 use Spf\Core\Loader;
 
 /**
- * Class DataAccessFactory
+ * Class DaoAdapterFactory
  * @package Spf\Database
  */
-class DataAccessFactory
+class DaoAdapterFactory
 {
     /**
-     * @var IDataAccess[]
+     * @var IDaoAdapter[]
      */
     private static $_daoList = array();
     private static $_instance = null;
     private $_dataAccessClass;
 
     /**
-     * @return null|DataAccessFactory
+     * @return null|DaoAdapterFactory
      */
     public static function getInstance()
     {
@@ -37,25 +37,22 @@ class DataAccessFactory
 
     /**
      * @param bool|false $master
-     * @return bool|IDataAccess
+     * @return bool|IDaoAdapter
      */
     public function getDao($master = false)
     {
+        $suffix = $master ? 'master' : 'slave';
         if (!$this->_dataAccessClass) {
-            $this->_dataAccessClass = Loader::getInstance()->getConfig('dao_class', 'database');
-            if (empty($this->_dataAccessClass)) {
-                trigger_error('No "dao_class" config item found in "database.php"', E_USER_ERROR);
+            $dbConfig = Loader::getInstance()->getConfig($suffix, 'database');
+            if (!isset($dbConfig) || empty($dbConfig['adapter_class'])) {
+                trigger_error('No "adapter_class" config item found in "database.php"', E_USER_ERROR);
                 return false;
             }
+            $this->_dataAccessClass = $dbConfig['adapter_class'];
         }
-        $key = $this->_dataAccessClass . '_' . ($master ? '1' : 0);
+        $key = $this->_dataAccessClass . '_' . $suffix;
         if (!isset(self::$_daoList[$key])) {
-            if ($master) {
-                $config = Loader::getInstance()->getConfig('master', 'database');
-            } else {
-                $config = Loader::getInstance()->getConfig('slave', 'database');
-            }
-            self::$_daoList[$key] = new $this->_dataAccessClass($config);
+            self::$_daoList[$key] = new $this->_dataAccessClass($dbConfig);
         }
         return self::$_daoList[$key];
     }

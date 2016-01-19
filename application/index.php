@@ -2,8 +2,8 @@
 if (!defined('E_DEPRECATED')) {
     defined('E_DEPRECATED', 0);
 }
-//error_reporting(E_ALL ^ E_NOTICE);
-error_reporting(0);
+error_reporting(E_ALL ^ E_NOTICE);
+//error_reporting(0);
 $base_uri = DIRECTORY_SEPARATOR == '/' ? $_SERVER['SCRIPT_NAME'] : str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
 define('BASE_URI', $base_uri == '/' ? '' : $base_uri);
 define('APP_NAME', 'application');
@@ -20,6 +20,6 @@ $G_CONF_PATH = array(
 require_once SYS_PATH . 'spf/core/Loader.php';
 spl_autoload_register(array('spf\core\Loader', 'autoload'));
 \spf\core\Application::getInstance()
-    ->setDebugEnabled(false)
+    ->setDebugEnabled(true)
     ->registerPlugin(new \Plugins\LoginPlugin())
     ->run();

@@ -27,13 +27,13 @@ interface IDaoAdapter
 
     public function query($sql);
 
-    public function update($table, $data, $where);
+    public function update($table, $data, $where,$option='');
 
-    public function delete($table, $where);
+    public function delete($table, $where,$option='');
 
-    public function insert($table, array $row);
+    public function insert($table, array $data);
 
-    public function batchInsert($table, array $rows);
+    public function batchInsert($table, array $data);
 
     public function beginTransaction();
 

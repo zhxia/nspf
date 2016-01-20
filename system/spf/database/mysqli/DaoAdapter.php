@@ -34,63 +34,45 @@ class DaoAdapter implements IDaoAdapter
 
     public function insertOnUpdate($table, $data, $update)
     {
-        // TODO: Implement insertOnUpdate() method.
+        if (empty($data) || empty($update)) {
+            return false;
+        }
+        $sql = SqlBuilder::buildInsertOnUpdateSql($table, $data, $update);
+        $stmt = $this->_dao->prepare($sql);
+        $params = $this->buildParams($data, $update);
+        $this->bindParams($stmt, $params);
+        if ($stmt->execute()) {
+            return $stmt->affected_rows;
+        }
+        return false;
     }
 
     public function select($table, $where = '', $order = '', $limit = 20, $offset = 0, $fields = '*')
     {
         $sql = SqlBuilder::buildQuerySql($table, $where, $order, $limit, $offset, $fields);
-        $params = null;
-        if (is_array($where)) {
-            $params = array_values($where);
-        }
         $stmt = $this->_dao->prepare($sql);
-        if ($params) {
-            $arrParam[] = str_repeat('s', count($params));
-            $arrParam = array_merge($arrParam, $params);
-            call_user_func_array(array($stmt, 'bind_param'), $this->makeRefVal($arrParam));
-        }
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result) {
-            return $result->fetch_all($this->_fetchModel);
+        $params = $this->buildParams($where);
+        $this->bindParams($stmt, $params);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result) {
+                return $result->fetch_all($this->_fetchModel);
+            }
         }
         return false;
     }
 
-    /**
-     * change value to ref
-     * @param $arr
-     * @return array
-     */
-    private function makeRefVal($arr)
-    {
-        $refs = array();
-        if ($arr) {
-            foreach ($arr as $k => $v) {
-                $refs[$k] =& $arr[$k];
-            }
-        }
-        return $refs;
-    }
-
     public function selectCount($table, $where)
     {
-        $sql=SqlBuilder::buildSelectCountSql($table,$where);
-        $params = null;
-        if (is_array($where)) {
-            $params = array_values($where);
-        }
+        $sql = SqlBuilder::buildSelectCountSql($table, $where);
         $stmt = $this->_dao->prepare($sql);
-        if ($params) {
-            $arrParam[] = str_repeat('s', count($params));
-            $arrParam = array_merge($arrParam, $params);
-            call_user_func_array(array($stmt, 'bind_param'), $this->makeRefVal($arrParam));
-        }
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result) {
-             return $result->fetch_row()[0];
+        $params = $this->buildParams($where);
+        $this->bindParams($stmt, $params);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            if ($result) {
+                return $result->fetch_assoc()['total'];
+            }
         }
         return false;
     }
@@ -107,24 +89,72 @@ class DaoAdapter implements IDaoAdapter
         return $result->fetch_all($this->_fetchModel);
     }
 
-    public function update($table, $data, $where)
+    public function update($table, $data, $where, $option = '')
     {
-        // TODO: Implement update() method.
+        if (empty($data) || empty($where)) {
+            return false;
+        }
+        $sql = SqlBuilder::buildUpdateSql($table, $data, $where, $option);
+        $stmt = $this->_dao->prepare($sql);
+        $params = $this->buildParams($data, $where);
+        $this->bindParams($stmt, $params);
+        if ($stmt->execute()) {
+            return $stmt->affected_rows;
+        }
+        return false;
     }
 
-    public function delete($table, $where)
+    public function delete($table, $where, $option = '')
     {
-        // TODO: Implement delete() method.
+        if (empty($where)) {
+            return false;
+        }
+        $sql = SqlBuilder::buildDeleteSql($table, $where, $option);
+        $stmt = $this->_dao->prepare($sql);
+        $params = $this->buildParams($where);
+        $this->bindParams($stmt, $params);
+        if ($stmt->execute()) {
+            return $stmt->affected_rows;
+        }
+        return false;
     }
 
-    public function insert($table, array $row)
+    public function insert($table, array $data)
     {
-        // TODO: Implement insert() method.
+        if (empty($data)) {
+            return false;
+        }
+        $sql = SqlBuilder::buildInsertSql($table, $data);
+        $stmt = $this->_dao->prepare($sql);
+        $params = $this->buildParams($data);
+        $this->bindParams($stmt, $params);
+        if ($stmt->execute()) {
+            return $stmt->insert_id;
+        }
+        return false;
     }
 
-    public function batchInsert($table, array $rows)
+    public function batchInsert($table, array $data)
     {
-        // TODO: Implement batchInsert() method.
+        if (empty($data)) {
+            return false;
+        }
+        $sql = SqlBuilder::buildInsertSql($table, $data[0]);
+        $stmt = $this->_dao->prepare($sql);
+        try {
+            $this->beginTransaction();
+            foreach ($data as $row) {
+                $params = $this->buildParams($row);
+                $this->bindParams($stmt, $params);
+                $stmt->execute();
+            }
+            $this->commit();
+            return $stmt->affected_rows;
+        } catch (\Exception $e) {
+            $this->rollback();
+            return false;
+        }
+
     }
 
     public function beginTransaction()
@@ -149,6 +179,51 @@ class DaoAdapter implements IDaoAdapter
             $this->rollback();
             $this->_transactionStarted = false;
         }
+    }
+
+    protected function buildParams()
+    {
+        $arr = null;
+        $args = func_get_args();
+        if ($args) {
+            $arr = array();
+            foreach ($args as $arg) {
+                if (!is_array($arg)) {
+                    continue;
+                }
+                $arr = array_merge($arr, $arg);
+            }
+        }
+        return $arr;
+    }
+
+    /**
+     * @param Statement $stmt
+     * @param array $params
+     */
+    protected function bindParams(Statement $stmt, array $params)
+    {
+        if ($params) {
+            $arrParam[] = str_repeat('s', count($params));
+            $arrParam = array_merge($arrParam, $params);
+            call_user_func_array(array($stmt, 'bind_param'), $this->makeRefVal($arrParam));
+        }
+    }
+
+    /**
+     * change value to ref
+     * @param $arr
+     * @return array
+     */
+    private function makeRefVal($arr)
+    {
+        $refs = array();
+        if ($arr) {
+            foreach ($arr as $k => $v) {
+                $refs[$k] =& $arr[$k];
+            }
+        }
+        return $refs;
     }
 
 }

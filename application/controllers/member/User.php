@@ -16,15 +16,24 @@ class UserController extends Controller
 {
     public function execute()
     {
-        $userModel=new UserModel();
-        $data=$userModel->getList();
+        $userModel = new UserModel();
+        /*$data=$userModel->getList();
         print_r($data);
         $cnt=$userModel->getTotal();
         var_dump($cnt);
-       /* $data=array(
-            'name'=>'zhxia',
-            'age'=>110
-        );*/
+        $ret=$userModel->updateUser();
+        var_dump($ret);*/
+        $ar = $userModel->addUsers(array(
+            array('name' => '王五'),
+            array('name'=>'钱琦'),
+        ));
+        var_dump($ar);
+//        $id=$userModel->addUser(array('name'=>'刘辉'));
+//        var_dump($id);
+        /* $data=array(
+             'name'=>'zhxia',
+             'age'=>110
+         );*/
 //        $this->getView()->displayJson($data);
     }
 

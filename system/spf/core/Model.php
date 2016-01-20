@@ -15,12 +15,12 @@ class Model
 {
 
     /**
-     * @param bool|false $master
+     * @param string $configKey
      * @return bool|\Spf\Database\IDaoAdapter
      */
-    protected function getDB($master = false)
+    protected function getDB($configKey='slave')
     {
-        return DaoAdapterFactory::getInstance()->getDao($master);
+        return DaoAdapterFactory::getInstance()->getDao($configKey);
     }
 
 }

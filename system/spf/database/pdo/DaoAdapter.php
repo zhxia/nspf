@@ -125,12 +125,12 @@ class DaoAdapter implements IDaoAdapter
         return $affect_count === 0 ? $result : $affect_count;
     }
 
-    public function delete($table, $where)
+    public function delete($table, $where, $option = '')
     {
         if (empty($where)) {
             return false;
         }
-        $sql = SqlBuilder::buildDeleteSql($table, $where);
+        $sql = SqlBuilder::buildDeleteSql($table, $where, $option);
         $params = null;
         if (is_array($where)) {
             $params = array_values($where);
@@ -159,16 +159,16 @@ class DaoAdapter implements IDaoAdapter
 
     }
 
-    public function batchInsert($table, array $rows)
+    public function batchInsert($table, array $data)
     {
-        if (empty($rows)) {
+        if (empty($data)) {
             return false;
         }
-        $sql = SqlBuilder::buildInsertSql($table, $rows[0]);
+        $sql = SqlBuilder::buildInsertSql($table, $data[0]);
+        $stmt = $this->_dao->prepare($sql);
         try {
             $this->begin_transaction();
-            $stmt = $this->_dao->prepare($sql);
-            foreach ($rows as $row) {
+            foreach ($data as $row) {
                 $params = array_values($row);
                 $stmt->execute($params);
             }

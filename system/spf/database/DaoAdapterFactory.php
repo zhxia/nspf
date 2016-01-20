@@ -20,9 +20,8 @@ class DaoAdapterFactory
     /**
      * @var IDaoAdapter[]
      */
-    private static $_daoList = array();
+    private static $_daoList = null;
     private static $_instance = null;
-    private $_dataAccessClass;
 
     /**
      * @return null|DaoAdapterFactory
@@ -36,25 +35,20 @@ class DaoAdapterFactory
     }
 
     /**
-     * @param bool|false $master
+     * @param bool|false $configKey
      * @return bool|IDaoAdapter
      */
-    public function getDao($master = false)
+    public function getDao($configKey)
     {
-        $suffix = $master ? 'master' : 'slave';
-        if (!$this->_dataAccessClass) {
-            $dbConfig = Loader::getInstance()->getConfig($suffix, 'database');
+        if (!isset(self::$_daoList[$configKey])) {
+            $dbConfig = Loader::getInstance()->getConfig($configKey, 'database');
             if (!isset($dbConfig) || empty($dbConfig['adapter_class'])) {
                 trigger_error('No "adapter_class" config item found in "database.php"', E_USER_ERROR);
                 return false;
             }
-            $this->_dataAccessClass = $dbConfig['adapter_class'];
+            self::$_daoList[$configKey] = new $dbConfig['adapter_class']($dbConfig);
         }
-        $key = $this->_dataAccessClass . '_' . $suffix;
-        if (!isset(self::$_daoList[$key])) {
-            self::$_daoList[$key] = new $this->_dataAccessClass($dbConfig);
-        }
-        return self::$_daoList[$key];
+        return self::$_daoList[$configKey];
     }
 
 }

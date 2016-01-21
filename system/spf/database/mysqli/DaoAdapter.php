@@ -9,6 +9,7 @@
 namespace Spf\Database\Mysqli;
 
 
+use Spf\Core\Logger\LoggerFactory;
 use Spf\Database\IDaoAdapter;
 use Spf\Database\SqlBuilder;
 
@@ -25,6 +26,9 @@ class DaoAdapter implements IDaoAdapter
     public function __construct($config)
     {
         $this->_dao = new Mysqli($config['host'], $config['user'], $config['password'], $config['database'], $config['port']);
+        if ($this->_dao->errno) {
+            trigger_error('mysqli connect to server failed! error:' . $this->_dao->error, E_USER_ERROR);
+        }
         if (isset($config['init_sql']) && $config['init_sql']) {
             foreach ($config['init_sql'] as $sql) {
                 $this->_dao->query($sql);

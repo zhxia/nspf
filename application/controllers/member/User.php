@@ -23,10 +23,14 @@ class UserController extends Controller
         var_dump($cnt);
         $ret=$userModel->updateUser();
         var_dump($ret);*/
-        $ar = $userModel->addUsers(array(
-            array('name' => '王五'),
-            array('name'=>'钱琦'),
-        ));
+        $data = array();
+        $count = 10000;
+        while ($count != 0) {
+            $data[] = array(
+                'name' => '张三' . $count--
+            );
+        }
+        $ar = $userModel->addUsers($data);
         var_dump($ar);
 //        $id=$userModel->addUser(array('name'=>'刘辉'));
 //        var_dump($id);

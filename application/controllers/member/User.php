@@ -11,19 +11,20 @@ namespace Controllers\Member;
 
 use Models\UserModel;
 use Spf\Core\Controller;
+use Spf\Libraries\Cache\CacheFactory;
 
 class UserController extends Controller
 {
     public function execute()
     {
         $userModel = new UserModel();
-        /*$data=$userModel->getList();
-        print_r($data);
+        $data=$userModel->getList();
+//        print_r($data);
         $cnt=$userModel->getTotal();
-        var_dump($cnt);
+//        var_dump($cnt);
         $ret=$userModel->updateUser();
-        var_dump($ret);*/
-        $data = array();
+//        var_dump($ret);
+        /*$data = array();
         $count = 10000;
         while ($count != 0) {
             $data[] = array(
@@ -31,7 +32,7 @@ class UserController extends Controller
             );
         }
         $ar = $userModel->addUsers($data);
-        var_dump($ar);
+        var_dump($ar);*/
 //        $id=$userModel->addUser(array('name'=>'刘辉'));
 //        var_dump($id);
         /* $data=array(
@@ -39,6 +40,17 @@ class UserController extends Controller
              'age'=>110
          );*/
 //        $this->getView()->displayJson($data);
+        $redis=CacheFactory::getInstance()->getRedis();
+        $redis->set("name",'zhxia84');
+        print_r($redis->get('name'));
+        $redis->mset(array('a1'=>'a1','a2'=>'a2'));
+        print_r($redis->mget(array('a1','a2')));
+        $redis->incr('a');
+        echo $redis->get('a');
+
+        $memcached=CacheFactory::getInstance()->getMemcached();
+        $memcached->set("a",'aaaaa');
+        echo $memcached->get('aa');
     }
 
 }

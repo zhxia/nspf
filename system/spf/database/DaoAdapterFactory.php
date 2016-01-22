@@ -38,7 +38,7 @@ class DaoAdapterFactory
      * @param bool|false $configKey
      * @return bool|IDaoAdapter
      */
-    public function getDao($configKey)
+    public function getDao($configKey = 'default')
     {
         if (!isset(self::$_daoList[$configKey])) {
             $dbConfig = Loader::getInstance()->getConfig($configKey, 'database');

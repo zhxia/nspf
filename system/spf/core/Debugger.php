@@ -31,7 +31,7 @@ class Debugger
     }
 
     /**
-     * @return null|Debugger
+     * @return Debugger||null
      */
     public static function getInstance()
     {
@@ -48,8 +48,8 @@ class Debugger
 
     public function shutdown()
     {
-        $this->benchmarkEnd(self::DEFAULT_BENCHMARK);
         if ($this->_enabled) {
+            $this->benchmarkEnd(self::DEFAULT_BENCHMARK);
             $this->showDebugInfo();
         }
     }
@@ -68,12 +68,18 @@ class Debugger
 
     public function benchmarkBegin($name)
     {
+        if (!$this->_enabled) {
+            return false;
+        }
         $this->_benchmarks[$name][self::BENCHMARK_BEGIN] = microtime(true);
         $this->_benchmarks[$name][self::BENCHMARK_BEGIN_MEMORY] = $this->getMemoryUsage();
     }
 
     public function benchmarkEnd($name)
     {
+        if (!$this->_enabled) {
+            return false;
+        }
         $this->_benchmarks[$name][self::BENCHMARK_END] = microtime(true);
         $this->_benchmarks[$name][self::BENCHMARK_END_MEMORY] = $this->getMemoryUsage();
     }

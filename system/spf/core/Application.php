@@ -91,6 +91,10 @@ class Application
 
     public function run()
     {
-        $this->_dispatcher->dispatch();
+        try {
+            $this->_dispatcher->dispatch();
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

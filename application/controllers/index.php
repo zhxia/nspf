@@ -20,7 +20,7 @@ class IndexController extends Core\Controller
     public function execute()
     {
         $this->getView()->assign('content', 'This is content!');
-        $this->getView()->display('index');
+//        $this->getView()->display('index');
 //        return 'Index';
 //        $this->getView()->displayJson(array('name'=>'zhxia'));
     }

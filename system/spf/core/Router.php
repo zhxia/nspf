@@ -40,7 +40,6 @@ class Router
             return $class;
         }
         $auto_mapping = Loader::getInstance()->getConfig(self::CONFIG_N_AUTO_MAPPING, self::CONFIG_F_ROUTER);
-        $auto_mapping=true;
         if ($auto_mapping) {
             $class = $this->autoMapping($uri);
             if ($class) {

@@ -213,6 +213,11 @@ class Dispatcher
         }
     }
 
+    protected function getAutoView($controllerClass)
+    {
+        return preg_replace('#Controllers\\\\(.*?)Controller#i', "$1", $controllerClass);
+    }
+
     /**
      * 请求分发
      */
@@ -253,12 +258,15 @@ class Dispatcher
             }
             break;
         }
+        if (empty($result)) {
+            //尝试根据controller名字自动加载视图
+            $result = $this->getAutoView($class);
+        }
         if (is_string($result)) {
             $this->_view->display($result);
-            //todo 自动加载视图
         }
         $this->executeInterceptor(Interceptor::INVOKE_AFTER);
-        //dispatchloop shutdown
+        //dispatch loop shutdown
         $this->executePlugins(Plugin::STEP_DISPATCH_LOOP_SHUTDOWN);
     }
 }

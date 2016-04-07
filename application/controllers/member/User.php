@@ -15,6 +15,11 @@ use Spf\Libraries\Cache\CacheFactory;
 
 class UserController extends Controller
 {
+    function init()
+    {
+        $this->getView()->setLayout('layout/default');
+    }
+
     public function execute()
     {
         $userModel = new UserModel();
@@ -48,9 +53,9 @@ class UserController extends Controller
         $redis->incr('a');
         echo $redis->get('a');
 
-        $memcached=CacheFactory::getInstance()->getMemcached();
+        /*$memcached=CacheFactory::getInstance()->getMemcached();
         $memcached->set("a",'aaaaa');
-        echo $memcached->get('aa');
+        echo $memcached->get('aa');*/
     }
 
 }

@@ -64,7 +64,7 @@ class Request
         return $_COOKIE;
     }
 
-    public function getCookie($name, $defVal = null, $xss = false)
+    public function getCookie($name, $defVal = '', $xss = false)
     {
         return isset($_COOKIE[$name]) ? $_COOKIE[$name] : $defVal;
     }

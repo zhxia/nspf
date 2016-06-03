@@ -18,9 +18,26 @@ class Model
      * @param string $configKey
      * @return bool|\Spf\Database\IDaoAdapter
      */
-    protected function getDB($configKey='slave')
+    private function getDB($configKey = 'slave')
     {
         return DaoAdapterFactory::getInstance()->getDao($configKey);
     }
+
+    /**
+     * @return bool|\Spf\Database\IDaoAdapter
+     */
+    protected function getDBMaster()
+    {
+        return $this->getDB('master');
+    }
+
+    /**
+     * @return bool|\Spf\Database\IDaoAdapter
+     */
+    protected function getDBSlave()
+    {
+        return $this->getDB('slave');
+    }
+
 
 }

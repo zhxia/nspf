@@ -63,7 +63,7 @@ abstract class Job
         $className = get_class($this);
         $this->log('Job:' . $className . ' is Running...');
         try {
-            call_user_func(arrar($this, 'execute'), $args);
+            call_user_func(array($this, 'execute'), $args);
         } catch (Exception $e) {
             $this->log('Exception:' . $e->getMessage());
         }

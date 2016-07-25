@@ -10,6 +10,11 @@ namespace Spf\Core;
 
 set_time_limit(0);
 
+/**
+ * eg:     php application/lanucher.php Jobs\\TestJob param1 param2 param3 ...
+ * Class Job
+ * @package Spf\Core
+ */
 abstract class Job
 {
 

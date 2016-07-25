@@ -10,6 +10,11 @@ namespace Jobs;
 
 use Spf\Core\Job;
 
+/**
+ *  eg:   php application/lanucher.php Jobs\\TestJob param1 param2 param3 ...
+ * Class TestJob
+ * @package Jobs
+ */
 class TestJob extends Job
 {
     protected function execute()

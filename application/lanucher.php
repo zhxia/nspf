@@ -19,5 +19,7 @@ $G_CONF_PATH = array(
 );
 require_once SYS_PATH . 'spf/core/Loader.php';
 spl_autoload_register(array('spf\core\Loader', 'autoload'));
-
-print_r($argv);
+$jobClass = new $argv[1];
+$jobParams = array_slice($argv, 2);
+$job = new $jobClass();
+$job->run($jobParams);

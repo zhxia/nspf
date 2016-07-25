@@ -18,7 +18,8 @@ class Loader
         'Controller',
         'Model',
         'Plugin',
-        'Interceptor'
+        'Interceptor',
+        'Job',
     );
 
     private function __construct()

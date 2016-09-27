@@ -37,7 +37,9 @@ class Application
     {
         if ($this->_shutdownFunctions) {
             foreach ($this->_shutdownFunctions as $func) {
-                call_user_func($func);
+                if (function_exists($func)) {
+                    call_user_func($func);
+                }
             }
         }
     }
@@ -46,9 +48,9 @@ class Application
      * @param $plugin
      * @return $this
      */
-    public function registerPlugin($plugin)
+    public function registerPlugin(Plugin $plugin)
     {
-        $this->_dispatcher->registerPlugin($plugin);
+        $this->_dispatcher->addPlugin($plugin);
         return $this;
     }
 
@@ -68,6 +70,7 @@ class Application
     public function registerShutdownFunctions($function)
     {
         $this->_shutdownFunctions[] = $function;
+        return $this;
     }
 
     /**
@@ -89,9 +92,33 @@ class Application
         return $this->_dispatcher;
     }
 
+
+    protected function initialize()
+    {
+        //初始化插件列表
+        $arrConf = Loader::getInstance()->getConfig();
+        if ($arrConf) {
+            if (isset($arrConf['plugins'])) {
+                foreach ($arrConf['plugins'] as $p) {
+                    $plugin = new $p();
+                    $this->_dispatcher->addPlugin($plugin);
+                }
+            }
+            if (isset($arrConf['request_class']) && $arrConf['request_class']) {
+                $request = new $arrConf['request_class'];
+                $this->_dispatcher->setRequest($request);
+            }
+            if (isset($arrConf['response_class']) && $arrConf['response_class']) {
+                $response = new $arrConf['response_class'];
+                $this->_dispatcher->setResponse($response);
+            }
+        }
+    }
+
     public function run()
     {
         try {
+            $this->initialize();
             $this->_dispatcher->dispatch();
         } catch (\Exception $e) {
             throw $e;

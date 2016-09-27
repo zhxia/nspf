@@ -22,7 +22,7 @@ class LoggerFactory
     public static function getLogger($className = '')
     {
         if (empty($className)) {
-            $className = Loader::getInstance()->getConfig('log_class_name');
+            $className = Loader::getInstance()->getConfig('log_class');
         }
         if (!isset(self::$_loggers[$className])) {
             $log_priority = Loader::getInstance()->getConfig('log_priority');

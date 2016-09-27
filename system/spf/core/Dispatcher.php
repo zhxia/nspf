@@ -73,7 +73,7 @@ class Dispatcher
     /**
      * @param Request $request
      */
-    public function setRequest($request)
+    public function setRequest(Request $request)
     {
         $this->_request = $request;
     }
@@ -89,7 +89,7 @@ class Dispatcher
     /**
      * @param Router $router
      */
-    public function setRouter($router)
+    public function setRouter(Router $router)
     {
         $this->_router = $router;
     }
@@ -106,7 +106,7 @@ class Dispatcher
     /**
      * @param Response $response
      */
-    public function setResponse($response)
+    public function setResponse(Response $response)
     {
         $this->_response = $response;
     }
@@ -130,12 +130,12 @@ class Dispatcher
     /**
      * @param View $view
      */
-    public function setView($view)
+    public function setView(View $view)
     {
         $this->_view = $view;
     }
 
-    public function registerPlugin(Plugin $plugin)
+    public function addPlugin(Plugin $plugin)
     {
         self::$_plugins[] = $plugin;
     }

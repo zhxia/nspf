@@ -22,7 +22,7 @@ class Debugger
     private $_benchmarks = array();
     private $_messages = array();
     private static $instance = null;
-    private $_enabled = true;
+    private $_enabled = false;
 
     private function __construct()
     {

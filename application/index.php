@@ -19,5 +19,4 @@ $G_CONF_PATH = array(
 );
 require_once SYS_PATH . 'spf/core/Loader.php';
 spl_autoload_register(array('spf\core\Loader', 'autoload'));
-\spf\core\Application::getInstance()
-    ->run();
+\spf\core\Application::getInstance()->run();

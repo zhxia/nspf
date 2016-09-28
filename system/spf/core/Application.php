@@ -95,22 +95,32 @@ class Application
 
     protected function initialize()
     {
-        //初始化插件列表
         $arrConf = Loader::getInstance()->getConfig();
         if ($arrConf) {
+            //初始化插件列表
             if (isset($arrConf['plugins'])) {
                 foreach ($arrConf['plugins'] as $p) {
                     $plugin = new $p();
                     $this->_dispatcher->addPlugin($plugin);
                 }
             }
+            //初始化请求类
             if (isset($arrConf['request_class']) && $arrConf['request_class']) {
                 $request = new $arrConf['request_class'];
                 $this->_dispatcher->setRequest($request);
             }
+            //初始化响应类
             if (isset($arrConf['response_class']) && $arrConf['response_class']) {
                 $response = new $arrConf['response_class'];
                 $this->_dispatcher->setResponse($response);
+            }
+            //初始化试图类
+            if (isset($arrConf['view_class']) && $arrConf['view_class']) {
+                $view = new $arrConf['view_class'];
+                $this->_dispatcher->setView($view);
+            }
+            if (isset($arrConf['enable_debug']) && $arrConf['enable_debug']) {
+                $this->setDebugEnabled(true);
             }
         }
     }

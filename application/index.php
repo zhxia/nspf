@@ -2,8 +2,7 @@
 if (!defined('E_DEPRECATED')) {
     defined('E_DEPRECATED', 0);
 }
-error_reporting(E_ALL ^ E_NOTICE);
-//error_reporting(0);
+error_reporting(E_ALL || ~E_NOTICE);
 define('BASE_URI', $base_uri == '/' ? '' : $base_uri);
 define('APP_NAME', 'application');
 define('APP_PATH', realpath(dirname(__FILE__)) . DIRECTORY_SEPARATOR);

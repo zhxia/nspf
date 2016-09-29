@@ -37,7 +37,7 @@ class Application
     {
         if ($this->_shutdownFunctions) {
             foreach ($this->_shutdownFunctions as $func) {
-                if (function_exists($func)) {
+                if (call_user_func_array('method_exists', $func)) {
                     call_user_func($func);
                 }
             }

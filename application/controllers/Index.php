@@ -8,10 +8,10 @@
 
 namespace Controllers;
 
-use Models\User;
+use Models\UserModel;
 use Spf\Core;
 
-class Index extends Core\Controller
+class IndexController extends Core\Controller
 {
     function init()
     {
@@ -20,11 +20,11 @@ class Index extends Core\Controller
 
     public function execute()
     {
-        $userModel=new User();
-        $data=$userModel->getList();
+        $userModel = new UserModel();
+        $data = $userModel->getList();
 //        $this->view->displayJson(array('name'=>'zhxia'));
 //        $this->getView()->display('index');
-        $this->getView()->assign('data',$data);
+        $this->getView()->assign('data', $data);
         return 'index';
     }
 

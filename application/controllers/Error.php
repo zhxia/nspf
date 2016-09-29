@@ -11,14 +11,14 @@ namespace Controllers;
 
 use Spf\Core\Controller;
 
-class Error extends Controller
+class ErrorController extends Controller
 {
     public function execute()
     {
-        $data=array(
-            'title'=>'标题'
+        $data = array(
+            'title' => '标题'
         );
-        $this->getView()->display('error/Error404',$data);
+        $this->getView()->display('error/Error404', $data);
     }
 
 }

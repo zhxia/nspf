@@ -7,4 +7,4 @@ $config['request_class'] = '';
 $config['response_class'] = '';
 $config['view_class'] = '';
 $config['router_class'] = '';
-$config['plugins'] = array('');
+$config['plugins'] = array('Plugins\LoginPlugin');
